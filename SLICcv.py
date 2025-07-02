@@ -1,0 +1,491 @@
+import numpy as np
+
+from skimage.segmentation import slic
+import skimage.io
+import matplotlib.pyplot as plt
+from skimage.segmentation import find_boundaries, mark_boundaries
+from openniftiimages import load_and_display_nifti 
+from skimage.util import img_as_float
+import argparse
+# from skimage.data import astronaut
+
+# # Replace 'your_image.jpg' with the actual path to your JPEG file
+# image_path = 'C:/Users/alexg/Desktop/study/graduation project/code/T2.jpeg'
+
+# # Read the image using skimage.io.imread
+# image = skimage.io.imread(image_path)
+
+# #file_path = 'G:/NKI dataset/Data_nifti/MRI001/NIFTIs/T2.nii'
+# file_path = 'G:/NKI dataset/Data_nifti/MRI004/NIFTIs/T2.nii'
+# nifti_data = load_and_display_nifti(file_path)
+# # Debugging prints
+# print("Type of nifti_data:", type(nifti_data))
+# print("Shape of nifti_data:", nifti_data.shape)
+
+# image = nifti_data
+
+# # image = skimage.io.imread(example_filename)
+
+# # Debugging prints
+# print("Type of image:", type(image))
+# print("Shape of image:", image.shape)
+
+# # Perform SLIC segmentation
+# #segments = slic(image, n_segments=1000, compactness=1, sigma=100, start_label=1)
+
+# # Find boundaries
+# #boundaries = find_boundaries(segments, mode='inner')
+
+# image_rotate = image[:, :, image.shape[2] // 2]
+
+# # rotation 90 degree
+# image_next = np.rot90(image_rotate)
+
+# # Perform SLIC segmentation
+# segments = slic(image_next, n_segments=100, compactness=1, sigma=100, start_label=1, channel_axis=None)
+
+# # Find boundaries
+# boundaries = find_boundaries(segments, mode='inner')
+
+
+# # Overlay boundaries on the original image
+# image_with_boundaries = mark_boundaries(image_next, boundaries)
+
+# # Display the original image and the segmented image in grayscale
+# plt.figure(figsize=(12, 6))
+
+# plt.subplot(1, 3, 1)
+# plt.imshow(image_next, cmap='gray')
+# plt.title('Original Image')
+
+# plt.subplot(1, 3, 2)
+# plt.imshow(image_with_boundaries, cmap='gray')
+# plt.title('Segmented Image with Boundaries (Grayscale)')
+
+# plt.subplot(1, 3, 3)
+# plt.imshow(mark_boundaries(image_next, segments), cmap='nipy_spectral')
+# plt.title('Segmented Image with Boundaries (Color)')
+
+# plt.show()
+
+
+
+
+
+# # Replace 'your_image.jpg' with the actual path to your JPEG file
+# image_path = 'C:/Users/alexg/Desktop/study/graduation project/code/T2.jpeg'
+
+ap = argparse.ArgumentParser()
+ap.add_argument("-i", "--input", required=True, help="Path to te image")
+args = vars(ap.parse_args())
+
+image = img_as_float(skimage.io.imread(args["input"]))
+
+image_next = np.rot90(image,2)
+
+# # Read the image using skimage.io.imread
+# image = skimage.io.imread(image_path)
+
+
+# # Debugging prints
+# print("Type of nifti_data:", type(image))
+# print("Shape of nifti_data:", image.shape)
+
+# # Normalize the pixel values using mean and standard deviation
+# # For a grayscale image or single channel:
+# if image.ndim == 2 or image.shape[2] == 1:
+#     mean = image.mean()
+#     std = image.std()
+#     image_norm = (image - mean) / std
+# # For a color image, apply normalization channel-wise
+# else:
+#     image_norm = np.zeros_like(image, dtype=np.float32)
+#     for i in range(3):  # Assuming image has 3 channels (RGB)
+#         channel = image[:, :, i]
+#         mean = channel.mean()
+#         std = channel.std()
+#         channel_norm = (channel - mean) / std
+#         image_norm[:, :, i] = channel_norm
+
+# # Scale normalized data back to [0, 255]
+# image_norm = ((image_norm - image_norm.min()) / (image_norm.max() - image_norm.min()) * 255).astype(np.uint8)
+
+# # rotation 90 degree
+# # image_next = np.rot90(image_rotate)
+# image_next = np.rot90(image_norm,2)
+
+# print(image_next.dtype)
+
+# 加个mask
+# from skimage.segmentation import slic
+# from skimage.data import astronaut
+# import numpy as np
+# import matplotlib.pyplot as plt
+
+# # Load an example image
+# image = astronaut()
+
+# # Create a mask (for demonstration, let's segment the central part of the image)
+# mask = np.zeros(image.shape[:2], dtype=bool)
+# mask[100:400, 100:400] = True
+
+# # Apply SLIC on the masked region of the image
+# segments = slic(image, n_segments=100, mask=mask)
+
+# image_next = img_as_float(astronaut()[::2, ::2])
+
+# Perform SLIC segmentation
+# 尝试使用不同的segments, compactness和sigma值的组合，找到最适合的组合（查一下各个参数对结果的影响是什么）
+segments_1 = slic(image_next, n_segments=250, compactness=5, sigma=10, start_label=1)
+segments_2 = slic(image_next, n_segments=250, compactness=10, sigma=10, start_label=1)
+segments_3 = slic(image_next, n_segments=250, compactness=15, sigma=10, start_label=1)
+segments_4 = slic(image_next, n_segments=300, compactness=5, sigma=10, start_label=1)
+segments_5 = slic(image_next, n_segments=300, compactness=10, sigma=10, start_label=1)
+segments_6 = slic(image_next, n_segments=300, compactness=15, sigma=10, start_label=1)
+segments_7 = slic(image_next, n_segments=200, compactness=5, sigma=10, start_label=1)
+segments_8 = slic(image_next, n_segments=200, compactness=10, sigma=10, start_label=1)
+segments_9 = slic(image_next, n_segments=200, compactness=15, sigma=10, start_label=1)
+segments_10 = slic(image_next, n_segments=250, compactness=10, sigma=1, start_label=1)
+
+# n_segments: number of superpixels
+# compactness: high compactness - space, low compactness - grayscale
+# sigma: high sigma - smooth image, low sigma - concentrate on the edges
+# start label: initial label value
+
+# n_segments: just use 500
+# compactness: just use 0.8
+# sigma: lower value get better results
+# start_label: after segmentation, each superpixel will be given a label representing its location. Only difference is whether it 
+#starts from 0,1,2,3,... or starts from 1,2,3,4,...
+
+# first try: 500 0.8 10; 500 0.8 20; 500 0.8 50; 300 0.8 20; 300 0.8 50; so sigma better be 50? n_segments better be 500?
+# second try: based on 500 0.8 50, try combination of lower sigma and higher n_segments. still the first one is better?
+
+
+image_next = image_next[:, :, image_next.shape[2] // 2]
+
+# Find boundaries
+boundaries_1 = find_boundaries(segments_1, mode='inner')
+boundaries_2 = find_boundaries(segments_2, mode='inner')
+boundaries_3 = find_boundaries(segments_3, mode='inner')
+boundaries_4 = find_boundaries(segments_4, mode='inner')
+boundaries_5 = find_boundaries(segments_5, mode='inner')
+boundaries_6 = find_boundaries(segments_6, mode='inner')
+boundaries_7 = find_boundaries(segments_7, mode='inner')
+boundaries_8 = find_boundaries(segments_8, mode='inner')
+boundaries_9 = find_boundaries(segments_9, mode='inner')
+boundaries_10 = find_boundaries(segments_10, mode='inner')
+
+
+# Overlay boundaries on the original image
+image_with_boundaries_1 = mark_boundaries(image_next, boundaries_1)
+image_with_boundaries_2 = mark_boundaries(image_next, boundaries_2)
+image_with_boundaries_3 = mark_boundaries(image_next, boundaries_3)
+image_with_boundaries_4 = mark_boundaries(image_next, boundaries_4)
+image_with_boundaries_5 = mark_boundaries(image_next, boundaries_5)
+image_with_boundaries_6 = mark_boundaries(image_next, boundaries_6)
+image_with_boundaries_7 = mark_boundaries(image_next, boundaries_7)
+image_with_boundaries_8 = mark_boundaries(image_next, boundaries_8)
+image_with_boundaries_9 = mark_boundaries(image_next, boundaries_9)
+image_with_boundaries_10 = mark_boundaries(image_next, boundaries_10)
+
+
+# Display the original image and the segmented image in grayscale
+plt.figure(figsize=(12, 6))
+
+plt.subplot(2, 5, 1)
+plt.imshow(image_next, cmap='gray')
+plt.title('Original Image')
+plt.axis('off')
+
+plt.subplot(2, 5, 2)
+plt.imshow(image_with_boundaries_1, cmap='gray')
+plt.title('250 5 10')
+plt.axis('off')
+
+plt.subplot(2, 5, 3)
+plt.imshow(image_with_boundaries_2, cmap='gray')
+plt.title('250 10 10')
+plt.axis('off')
+
+plt.subplot(2, 5, 4)
+plt.imshow(image_with_boundaries_3, cmap='gray')
+plt.title('250 15 10')
+plt.axis('off')
+
+plt.subplot(2, 5, 5)
+plt.imshow(image_with_boundaries_4, cmap='gray')
+plt.title('300 5 10')
+plt.axis('off')
+
+plt.subplot(2, 5, 6)
+plt.imshow(image_with_boundaries_5, cmap='gray')
+plt.title('300 10 10')
+plt.axis('off')
+
+plt.subplot(2, 5, 7)
+plt.imshow(image_with_boundaries_6, cmap='gray')
+plt.title('300 15 10')
+plt.axis('off')
+
+plt.subplot(2, 5, 8)
+plt.imshow(image_with_boundaries_7, cmap='gray')
+plt.title('200 5 10')
+plt.axis('off')
+
+plt.subplot(2, 5, 9)
+plt.imshow(image_with_boundaries_8, cmap='gray')
+plt.title('200 10 10')
+plt.axis('off')
+
+plt.subplot(2, 5, 10)
+plt.imshow(image_with_boundaries_9, cmap='gray')
+plt.title('200 15 10')
+plt.axis('off')
+
+# plt.subplot(1, 3, 3)
+# plt.imshow(mark_boundaries(image, segments), cmap='nipy_spectral')
+# plt.title('Segmented Image with Boundaries (Color)')
+
+plt.show()
+
+plt.imshow(image_with_boundaries_10, cmap='gray')
+plt.title('online example')
+plt.axis('off')
+plt.show()
+
+
+
+
+
+
+
+
+
+# import sys
+# import cv2
+
+# class SLIC:
+#     # def __init__(self, img, step, nc):
+#     def __init__(self, img, step):
+#         self.img = img
+#         self.height, self.width = img.shape[:2]
+#         # self._convertToLAB()
+#         self.step = step
+#         # self.nc = nc
+#         self.ns = step
+#         self.FLT_MAX = 1000000
+#         self.ITERATIONS = 1
+
+    # def _convertToLAB(self):
+    #     try:
+    #         self.labimg = cv2.cvtColor(img, cv2.COLOR_BGR2LAB).astype(np.float64)
+    #     except ImportError:
+    #         self.labimg = np.copy(self.img)
+    #         for i in range(self.labimg.shape[0]):
+    #             for j in range(self.labimg.shape[1]):
+    #                 rgb = self.labimg[i, j]
+    #                 self.labimg[i, j] = self._rgb2lab(tuple(reversed(rgb)))
+
+    # def _rgb2lab ( self, inputColor ) :
+
+    #    num = 0
+    #    RGB = [0, 0, 0]
+
+    #    for value in inputColor :
+    #        value = float(value) / 255
+
+    #        if value > 0.04045 :
+    #            value = ( ( value + 0.055 ) / 1.055 ) ** 2.4
+    #        else :
+    #            value = value / 12.92
+
+    #        RGB[num] = value * 100
+    #        num = num + 1
+
+    #    XYZ = [0, 0, 0,]
+
+    #    X = RGB [0] * 0.4124 + RGB [1] * 0.3576 + RGB [2] * 0.1805
+    #    Y = RGB [0] * 0.2126 + RGB [1] * 0.7152 + RGB [2] * 0.0722
+    #    Z = RGB [0] * 0.0193 + RGB [1] * 0.1192 + RGB [2] * 0.9505
+    #    XYZ[ 0 ] = round( X, 4 )
+    #    XYZ[ 1 ] = round( Y, 4 )
+    #    XYZ[ 2 ] = round( Z, 4 )
+
+    #    XYZ[ 0 ] = float( XYZ[ 0 ] ) / 95.047         # ref_X =  95.047   Observer= 2°, Illuminant= D65
+    #    XYZ[ 1 ] = float( XYZ[ 1 ] ) / 100.0          # ref_Y = 100.000
+    #    XYZ[ 2 ] = float( XYZ[ 2 ] ) / 108.883        # ref_Z = 108.883
+
+    #    num = 0
+    #    for value in XYZ :
+
+    #        if value > 0.008856 :
+    #            value = value ** ( 0.3333333333333333 )
+    #        else :
+    #            value = ( 7.787 * value ) + ( 16 / 116 )
+
+    #        XYZ[num] = value
+    #        num = num + 1
+
+    #    Lab = [0, 0, 0]
+
+    #    L = ( 116 * XYZ[ 1 ] ) - 16
+    #    a = 500 * ( XYZ[ 0 ] - XYZ[ 1 ] )
+    #    b = 200 * ( XYZ[ 1 ] - XYZ[ 2 ] )
+
+    #    Lab [ 0 ] = round( L, 4 )
+    #    Lab [ 1 ] = round( a, 4 )
+    #    Lab [ 2 ] = round( b, 4 )
+
+    #    return Lab
+
+    # def generateSuperPixels(self):
+    #     self._initData()
+    #     indnp = np.mgrid[0:self.height,0:self.width].swapaxes(0,2).swapaxes(0,1)
+    #     for i in range(self.ITERATIONS):
+    #         print(f"Iteration {i + 1}/{self.ITERATIONS}")
+    #         self.distances = self.FLT_MAX * np.ones(self.img.shape[:2])
+    #         for j in range(self.centers.shape[0]):
+    #             xlow, xhigh = int(self.centers[j][3] - self.step), int(self.centers[j][3] + self.step)
+    #             ylow, yhigh = int(self.centers[j][4] - self.step), int(self.centers[j][4] + self.step)
+
+    #             if xlow <= 0:
+    #                 xlow = 0
+    #             if xhigh > self.width:
+    #                 xhigh = self.width
+    #             if ylow <=0:
+    #                 ylow = 0
+    #             if yhigh > self.height:
+    #                 yhigh = self.height
+
+    #             cropimg = self.labimg[ylow : yhigh , xlow : xhigh]
+    #             colordiff = cropimg - self.labimg[self.centers[j][4], self.centers[j][3]]
+    #             colorDist = np.sqrt(np.sum(np.square(colordiff), axis=2))
+
+    #             yy, xx = np.ogrid[ylow : yhigh, xlow : xhigh]
+    #             pixdist = ((yy-self.centers[j][4])**2 + (xx-self.centers[j][3])**2)**0.5
+    #             dist = ((colorDist/self.nc)**2 + (pixdist/self.ns)**2)**0.5
+
+    #             distanceCrop = self.distances[ylow : yhigh, xlow : xhigh]
+    #             idx = dist < distanceCrop
+    #             distanceCrop[idx] = dist[idx]
+    #             self.distances[ylow : yhigh, xlow : xhigh] = distanceCrop
+    #             self.clusters[ylow : yhigh, xlow : xhigh][idx] = j
+
+    #         for k in range(len(self.centers)):
+    #             idx = (self.clusters == k)
+    #             colornp = self.labimg[idx]
+    #             distnp = indnp[idx]
+    #             self.centers[k][0:3] = np.sum(colornp, axis=0)
+    #             sumy, sumx = np.sum(distnp, axis=0)
+    #             self.centers[k][3:] = sumx, sumy
+    #             self.centers[k] /= np.sum(idx)
+
+    # def _initData(self):
+    #     self.clusters = -1 * np.ones(self.img.shape[:2])
+    #     self.distances = self.FLT_MAX * np.ones(self.img.shape[:2])
+
+    #     centers = []
+    #     for i in range(self.step, (self.width - self.step/2)//1, self.step):
+    #         for j in range(self.step, self.height - self.step/2, self.step):
+                
+    #             nc = self._findLocalMinimum(center=(i, j))
+    #             color = self.labimg[nc[1], nc[0]]
+    #             center = [color[0], color[1], color[2], nc[0], nc[1]]
+    #             centers.append(center)
+    #     self.center_counts = np.zeros(len(centers))
+    #     self.centers = np.array(centers)
+
+    # def createConnectivity(self):
+    #     label = 0
+    #     adjlabel = 0
+    #     lims = self.width * self.height / self.centers.shape[0]
+    #     dx4 = [-1, 0, 1, 0]
+    #     dy4 = [0, -1, 0, 1]
+    #     new_clusters = -1 * np.ones(self.img.shape[:2]).astype(np.int64)
+    #     elements = []
+    #     for i in range(self.width):
+    #         for j in range(self.height):
+    #             if new_clusters[j, i] == -1:
+    #                 elements = []
+    #                 elements.append((j, i))
+    #                 for dx, dy in zip(dx4, dy4):
+    #                     x = elements[0][1] + dx
+    #                     y = elements[0][0] + dy
+    #                     if (x>=0 and x < self.width and 
+    #                         y>=0 and y < self.height and 
+    #                         new_clusters[y, x] >=0):
+    #                         adjlabel = new_clusters[y, x]
+    #             count = 1
+    #             c = 0
+    #             while c < count:
+    #                 for dx, dy in zip(dx4, dy4):
+    #                     x = elements[c][1] + dx
+    #                     y = elements[c][0] + dy
+
+    #                     if (x>=0 and x<self.width and y>=0 and y<self.height):
+    #                         if new_clusters[y, x] == -1 and self.clusters[j, i] == self.clusters[y, x]:
+    #                             elements.append((y, x))
+    #                             new_clusters[y, x] = label
+    #                             count+=1
+    #                 c+=1
+    #             if (count <= lims >> 2):
+    #                 for c in range(count):
+    #                     new_clusters[elements[c]] = adjlabel
+    #                 label-=1
+    #             label+=1
+    #     self.new_clusters = new_clusters
+
+    # def displayContours(self, color):
+    #     dx8 = [-1, -1, 0, 1, 1, 1, 0, -1]
+    #     dy8 = [0, -1, -1, -1, 0, 1, 1, 1]
+
+    #     isTaken = np.zeros(self.img.shape[:2], np.bool)
+    #     contours = []
+
+    #     for i in range(self.width):
+    #         for j in range(self.height):
+    #             nr_p = 0
+    #             for dx, dy in zip(dx8, dy8):
+    #                 x = i + dx
+    #                 y = j + dy
+    #                 if x>=0 and x < self.width and y>=0 and y < self.height:
+    #                     if isTaken[y, x] == False and self.clusters[j, i] != self.clusters[y, x]:
+    #                         nr_p += 1
+
+    #             if nr_p >= 2:
+    #                 isTaken[j, i] = True
+    #                 contours.append([j, i])
+
+    #     for i in range(len(contours)):
+    #         self.img[contours[i][0], contours[i][1]] = color
+
+    # def _findLocalMinimum(self, center):
+    #     min_grad = self.FLT_MAX
+    #     loc_min = center
+    #     for i in range(center[0] - 1, center[0] + 2):
+    #         for j in range(center[1] - 1, center[1] + 2):
+    #             c1 = self.labimg[j+1, i]
+    #             c2 = self.labimg[j, i+1]
+    #             c3 = self.labimg[j, i]
+    #             if ((c1[0] - c3[0])**2)**0.5 + ((c2[0] - c3[0])**2)**0.5 < min_grad:
+    #                 min_grad = abs(c1[0] - c3[0]) + abs(c2[0] - c3[0])
+    #                 loc_min = [i, j]
+    #     return loc_min
+
+
+# # from openniftiimages import data
+# # data = str(data)
+# data = "C:/Users/alexg/Desktop/study/graduation project/code/T2.jpeg"
+# img = cv2.imread(data)
+# nr_superpixels = 100
+# # nc = int(sys.argv[3])
+# print(img.shape)
+# step = int((img.shape[0]*img.shape[1]/nr_superpixels)**0.5)
+
+# slic = SLIC(img, step)
+# slic.generateSuperPixels()
+# slic.createConnectivity()
+# cv2.imshow("superpixels", slic.img)
+# cv2.waitKey(0)
+# cv2.imwrite("SLICimg.jpg", slic.img)
